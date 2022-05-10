@@ -1,0 +1,10 @@
+version: '3'
+services:
+ precio-luz-bot:
+  build: .
+  env_file:
+    - .env  
+  environment:
+    TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+  volumes:
+   - .:/code
