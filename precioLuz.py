@@ -3,7 +3,7 @@ import logging
 import os
 from telegram import (ParseMode)
 from telegram.ext import (Updater, CommandHandler)
-
+import matplotlib.pyplot as plt
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -131,6 +131,40 @@ def getCheap(update, context):
         msg = "Hoy la luz será más barata entre las %s y las %s. El precio será de %s el %s \n" % (i["start"], i["end"], i["price"], i["units"])        
         update.message.reply_text(msg)
 
+def getAllPrice(update, context):
+    tarifas = allPrice()
+    horas = tarifas.keys()
+
+    horarios = []
+    precios = []
+
+    #Enviamos un mensaje con el precio de cada hora
+    for h in horas: 
+        tarifa = tarifas[h]        
+        hora = getBeautifulHours(tarifa["hour"])
+        
+        s = hora["start"]
+        separador = s.find(":")
+        s = s[0:separador]
+        horarios.append(int(s))
+        precios.append(tarifa["price"])
+        msg += "A las  %s el precio será de %s el %s \n" % (hora["start"], tarifa["price"], tarifa["units"])
+        
+    
+    update.message.reply_text(msg)
+    
+    #Generamos la grafica y la enviamos
+    fig, ax = plt.subplots()  
+    ax.plot(horarios, precios)
+    ax.set(xlabel='Horas', ylabel='Precio (€)',
+       title='Evolución del precio de la luz hoy %s ' % tarifa["date"])
+    ax.grid()
+    plt.savefig('hoy.png')
+    plt.show()
+
+    update.message.reply_photo(photo=open('hoy.png', 'rb'))
+
+
 def main():    
     TOKEN = os.environ["TELEGRAM_TOKEN"]
     updater = Updater(TOKEN, use_context=True)
@@ -142,7 +176,7 @@ def main():
     dp.add_handler(CommandHandler('minimo',     getMin))
     dp.add_handler(CommandHandler('media',      getAvg))
     dp.add_handler(CommandHandler('mejores',    getCheap))
-
+    dp.add_handler(CommandHandler('hoy',    getAllPrice))
 
     # En caso de error
     dp.add_error_handler(error_callback)
