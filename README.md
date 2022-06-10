@@ -1,5 +1,6 @@
 # Precio de la luz
-
+[![Deploy](https://github.com/crakernano/precio-luz-bot/actions/workflows/deploy.yml/badge.svg)](https://github.com/crakernano/precio-luz-bot/actions/workflows/deploy.yml)
+---
 Pequeño bot para obtener el precio de la luz en España. Permite conocer las horas más caras, más baratas, la media del día... etc
 
 ## Como activarlo
