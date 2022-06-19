@@ -137,6 +137,7 @@ def getAllPrice(update, context):
 
     horarios = []
     precios = []
+    msg = "Si ves esto, algo malo ha pasado."
 
     #Enviamos un mensaje con el precio de cada hora
     for h in horas: 
